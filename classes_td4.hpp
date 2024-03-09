@@ -1,5 +1,4 @@
-﻿// Solutionnaire du TD3 INF1015 hiver 2024
-// Par Francois-R.Boyer@PolyMtl.ca
+
 #pragma once
 // Structures mémoires pour une collection de films.
 
