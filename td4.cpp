@@ -157,26 +157,20 @@ unique_ptr<Livre> lireLivre(const string& fichier){
 
 }
 
-Bibliotheque creerItems(string nomFichierFilm, string nomFichierLivre){
+Bibliotheque::Bibliotheque(string nomFichierFilm, string nomFichierLivre) {
     ifstream fichierFilm(nomFichierFilm, ios::binary);
     fichierFilm.exceptions(ios::failbit);
     int nElements = int(lireUintTailleVariable(fichierFilm));
-    Bibliotheque bibliotheque;
 
     for ([[maybe_unused]] int i : range(nElements)) {
-        bibliotheque.ajouterItem(lireFilm(fichierFilm, bibliotheque));
+        ajouterItem(lireFilm(fichierFilm, *this));
     }
 
     ifstream fichierLivre(nomFichierLivre);
     string ligne;
     while(getline(fichierLivre, ligne)) {
-        bibliotheque.ajouterItem(lireLivre(ligne));
+        ajouterItem(lireLivre(ligne));
     }
-
-    return  bibliotheque;
-
-
-
 }
 
 
@@ -190,7 +184,7 @@ int main()
 	static const string ligneDeSeparation = "\n\033[35m════════════════════════════════════════\033[0m\n";
 
     cout << "Création Bibliothèque" << ligneDeSeparation;
-    Bibliotheque bibliotheque = creerItems("films.bin", "livres.txt" );
+    Bibliotheque bibliotheque("films.bin", "livres.txt" );
 
 
 
