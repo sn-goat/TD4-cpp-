@@ -52,6 +52,7 @@ using ListeActeurs = Liste<Acteur>;
 class Bibliotheque{
 public:
     Bibliotheque() = default;
+    Bibliotheque(string nomFichierFilm, string nomFichierLivre);
     void ajouterItem(unique_ptr<Item> item);
     void enleverItem(const unique_ptr<Item> item);
     shared_ptr<Acteur> trouverActeur(const string& nomActeur) const;
