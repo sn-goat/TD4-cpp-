@@ -88,11 +88,10 @@ span<shared_ptr<Acteur>> Film::obtenirActeurs() const{
 shared_ptr<Acteur> Bibliotheque::trouverActeur(const string& nomActeur) const
 {
     for (auto&& item : span(items_)) {
-        if(typeid(*item) == typeid(Film)) {
-            for (const shared_ptr<Acteur> &acteur: item->obtenirActeurs()) {
-                if (acteur->obtenirNom() == nomActeur)
-                    return acteur;
-            }
+        for (const shared_ptr<Acteur> &acteur: item->obtenirActeurs()) {
+            if (acteur->obtenirNom() == nomActeur)
+                return acteur;
+
         }
     }
     return nullptr;
@@ -184,7 +183,7 @@ int main()
 	static const string ligneDeSeparation = "\n\033[35m════════════════════════════════════════\033[0m\n";
 
     cout << "Création Bibliothèque" << ligneDeSeparation;
-    Bibliotheque bibliotheque("films.bin", "livres.txt" );
+    Bibliotheque bibliotheque("films.bin", "livres.txt");
 
 
 
