@@ -97,7 +97,6 @@ shared_ptr<Acteur> Bibliotheque::trouverActeur(const string& nomActeur) const
     return nullptr;
 }
 
-
 shared_ptr<Acteur> lireActeur(istream& fichier, const Bibliotheque& bibliotheque)
 {
     Acteur acteur = {};
@@ -113,7 +112,6 @@ shared_ptr<Acteur> lireActeur(istream& fichier, const Bibliotheque& bibliotheque
         return make_shared<Acteur>(std::move(acteur));  // Le move n'est pas nécessaire mais permet de transférer le texte du nom sans le copier.
     }
 }
-
 
 unique_ptr<Film> lireFilm(istream& fichier, Bibliotheque& bibliotheque)
 {
@@ -159,9 +157,22 @@ ostream& operator<< (ostream& os, const Acteur& acteur)
 {
     return os << "  " << acteur.nom_ << ", " << acteur.anneeNaissance_ << " " << acteur.sexe_ << endl;
 }
+
+ostream& operator<< (ostream& os, const Affichable& affichable)
+{
+    affichable.afficher(os);
+    return os;
+}
+
+
+//os << titre;
+//os << ", par " << realisateur;
+
 void Item::afficher(ostream& os) const
 {   
+    
     os << Titre;
+    //os << ", par " << realisateur;
     os << "Titre: " << Titre << "  Année:" << Annee << endl;
 }
 void Film::afficher(ostream& os) const
@@ -181,10 +192,26 @@ void Livre::afficher(ostream& os) const
     os << "  Vendus: " << millionsCopiesVendues_ << "M  Pages: " << nombresPages_ << endl;
 }
 
+void FilmLivre::afficher(ostream& os) const
+{
+    Item::afficher(os);
+    os << "Combo:" << endl;
+    // L'affichage comme l'exemple sur Discord est accepté, ici on montre comment on pourrait séparer en deux méthodes pour ne pas avoir le même titre d'Item affiché plusieurs fois.
+    os << "  Réalisateur: " << realisateur_ << endl;
+    os << "  Recette: " << recette_ << "M$" << endl;
+    os << "Acteurs:" << endl;
+    for (auto&& acteur : acteurs_.enSpan())
+        os << *acteur;
+    os << "Livre:" << endl;
+    os << "  Auteur: " << auteur_ << endl;
+    os << "  Vendus: " << millionsCopiesVendues_ << "M  Pages: " << nombresPages_ << endl;
+}
 
 
-
-
+void Item::lireTitreAnnee(istream& is)
+{
+    is >> Titre >> Annee;
+}
 
 
 
