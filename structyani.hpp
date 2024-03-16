@@ -83,6 +83,8 @@ public:
 	void afficher(ostream& os) const override;
 	Item() = default;
 	virtual ~Item() = default;
+	void lireTitreAnnee(istream& is);
+
 	virtual span<shared_ptr<Acteur>> obtenirActeurs() const { return {}; };
 	string Titre;
 	int Annee = 0;
@@ -99,13 +101,16 @@ public:
 	void afficher(ostream& os) const override;
 	friend unique_ptr<Film> lireFilm(istream& fichier, Bibliotheque& Bibliotheque);
 	span<shared_ptr<Acteur>> obtenirActeurs() const override;
-	Film(const string& titre, int annee) : titre_(titre), annee_(annee) {}
+	Film(const string& Titre, int Annee) : titre_(Titre), anneeSortie_(Annee) {}
 	
-private:
 	string titre_, realisateur_;
 	int anneeSortie_ = 0, recette_ = 0;
 	ListeActeurs acteurs_;
 	int annee_;
+
+
+private:
+	
 };
 
 class Livre :virtual public Item  {
@@ -113,12 +118,23 @@ public:
 	Livre() = default;
 	void afficher(ostream& os) const override;
 	friend unique_ptr<Livre> lireLivre(const string& fichier);
-	Livre(const string& titre, int annee) : titre_(titre), annee_(annee) {}
+	Livre(const string& titre, int annee) : titre_(Titre), annee_(Annee) {}
 	
-private:
 	string titre_, auteur_;
 	int annee_, millionsCopiesVendues_, nombresPages_;
+private:
+	/*string titre_, auteur_;
+	int annee_, millionsCopiesVendues_, nombresPages_;*/
 };
+
+class FilmLivre : public Film, public Livre {
+public:
+	FilmLivre(const Film& film, const Livre& livre) : Item(film), Film(film), Livre(livre) { }
+	void afficher(ostream& os) const override;
+	//void afficherInfoPrimaireSur(ostream& os) const override;
+};
+
+
 
 class Acteur
 {
