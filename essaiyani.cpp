@@ -193,10 +193,29 @@ void Livre::afficher(ostream& os) const
 
 void FilmLivre::afficher(ostream& os) const
 {
-    Film::afficher(os);
-    os << ", de " << auteur_;
+    os << "Combo Film-Livre : " << Titre << endl;
+    os << "   - Réalisateur : " << realisateur_ << endl;
+    os << "   - Auteur : " << auteur_ << endl;
+    os << "   - Année : " << Annee << endl;
+    os << "   - Recette : " << recette_ << "M$" << endl;
+    os << "   - Nombre de pages : " << nombresPages_ << endl;
+    os << "   - Millions de copies vendues : " << millionsCopiesVendues_ << "M" << endl;
 }
 
+ostream& operator<<(ostream& os, const Film& film) {
+    film.afficher(os);
+    return os;
+}
+
+ostream& operator<<(ostream& os, const Livre& livre) {
+    livre.afficher(os);
+    return os;
+}
+
+ostream& operator<<(ostream& os, const FilmLivre& filmLivre) {
+    filmLivre.afficher(os);
+    return os;
+}
 
 //void Item::lireTitreAnnee(istream& is)
 //{
@@ -223,10 +242,16 @@ Bibliotheque::Bibliotheque(string nomFichierFilm, string nomFichierLivre) {
         ajouterItem(lireLivre(ligne));
     }
 }
-
-void afficherListeItems(const vector<unique_ptr<Item>>& items) {
+template <typename T>
+void afficherListeItems(const T& items) {
+    cout << "Bibliothèque: " << endl;
     for (const auto& item : items) {
-        item->afficher(cout);
+        if (item) {  // Vérifie si l'élément est non nul
+            item->afficher(cout);
+        } else {
+            continue;
+            /*cout << "Erreur : Element null trouvé dans la liste." << endl;*/
+        }
     }
 }
 
@@ -243,6 +268,84 @@ int main()
     Bibliotheque bibliotheque("films.bin", "livres.txt");
     afficherListeItems(bibliotheque.obtenirItems());
 
+    cout << ligneDeSeparation << endl;
+
+    auto hobbitFilm = bibliotheque.trouver([](const Item& item) {
+        return dynamic_cast<const Film*>(&item) != nullptr && item.Titre == "Le Hobbit : La Bataille des Cinq Armées";
+        });
+
+    auto hobbitLivre = bibliotheque.trouver([](const Item& item) {
+        return dynamic_cast<const Livre*>(&item) != nullptr && item.Titre == "The Hobbit";
+        });
+
+    if (hobbitFilm && hobbitLivre) {
+        
+        auto filmLivreHobbit = make_unique<FilmLivre>(*dynamic_cast<Film*>(hobbitFilm.get()), *dynamic_cast<Livre*>(hobbitLivre.get()));
+        bibliotheque.ajouterItem(std::move(filmLivreHobbit));
+    }
+    else {
+        cout << "Film 'Le Hobbit' ou livre correspondant non trouvé." << endl;
+    }
+
+    cout << "Bibliothèque après ajout du combo 'Le Hobbit':" << ligneDeSeparation;
+    afficherListeItems(bibliotheque.obtenirItems());
+
+    return 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //cout << ligneDeSeparation << endl;
+    //
+    //auto hobbitFilm = bibliotheque.trouver([](const Item& item) {
+    //    cout << "1" << endl;
+    //    return dynamic_cast<const Film*>(&item) != nullptr && item.Titre == "Le Hobbit : La Bataille des Cinq Armées";
+    //    });
+
+    //// Trouver le livre correspondant à "Le Hobbit"
+    //auto hobbitLivre = bibliotheque.trouver([](const Item& item) {
+    //    cout << "2" << endl;
+    //    return dynamic_cast<const Livre*>(&item) != nullptr && item.Titre == "The Hobbit";
+    //    });
+    //auto filmLivreHobbit = make_unique<FilmLivre>(*hobbitFilm, *hobbitLivre);
+    //bibliotheque.ajouterItem(std::move(filmLivreHobbit));
+    //// Vérifier si le film et le livre sont trouvés
+    ////if (hobbitFilm && hobbitLivre) {
+    ////    // Créer un nouvel objet FilmLivre en utilisant le film et le livre trouvés
+    ////    cout << "3" << endl;
+    ////    auto filmLivre = make_unique<FilmLivre>(*dynamic_cast<Film*>(hobbitFilm.get()), *dynamic_cast<Livre*>(hobbitLivre.get()));
+
+    ////    // Ajouter ce nouvel élément à la liste d'éléments de la bibliothèque
+    ////    cout << "4" << endl;
+    ////    bibliotheque.ajouterItem(std::move(filmLivre));
+    ////}
+    ///*else {
+    //    cout << "Film 'Le Hobbit' ou livre correspondant non trouvé." << endl;
+    //}*/
+    //afficherListeItems(bibliotheque.obtenirItems());
+   
 
 
 }
