@@ -83,7 +83,7 @@ public:
 	void afficher(ostream& os) const override;
 	Item() = default;
 	virtual ~Item() = default;
-	void lireTitreAnnee(istream& is);
+	//void lireTitreAnnee(istream& is);
 
 	virtual span<shared_ptr<Acteur>> obtenirActeurs() const { return {}; };
 	string Titre;
@@ -101,12 +101,13 @@ public:
 	void afficher(ostream& os) const override;
 	friend unique_ptr<Film> lireFilm(istream& fichier, Bibliotheque& Bibliotheque);
 	span<shared_ptr<Acteur>> obtenirActeurs() const override;
-	Film(const string& Titre, int Annee) : titre_(Titre), anneeSortie_(Annee) {}
+	//Film(const string& Titre, int Annee) : titre_(Titre), anneeSortie_(Annee) {}
 	
-	string titre_, realisateur_;
-	int anneeSortie_ = 0, recette_ = 0;
+	//string titre_;
+	string realisateur_; 
+	int recette_ = 0;
 	ListeActeurs acteurs_;
-	int annee_;
+	
 
 
 private:
@@ -118,10 +119,10 @@ public:
 	Livre() = default;
 	void afficher(ostream& os) const override;
 	friend unique_ptr<Livre> lireLivre(const string& fichier);
-	Livre(const string& titre, int annee) : titre_(Titre), annee_(Annee) {}
+	//Livre(const string& titre, int annee) : titre_(Titre), annee_(Annee) {}
 	
-	string titre_, auteur_;
-	int annee_, millionsCopiesVendues_, nombresPages_;
+	string  auteur_;
+	int millionsCopiesVendues_, nombresPages_;
 private:
 	/*string titre_, auteur_;
 	int annee_, millionsCopiesVendues_, nombresPages_;*/
