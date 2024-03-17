@@ -127,7 +127,6 @@ private:
 	/*string titre_, auteur_;
 	int annee_, millionsCopiesVendues_, nombresPages_;*/
 };
-
 class FilmLivre : public Film, public Livre {
 public:
 	FilmLivre(const Film& film, const Livre& livre) : Item(film), Film(film), Livre(livre) { }
