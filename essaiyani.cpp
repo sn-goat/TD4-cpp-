@@ -116,13 +116,13 @@ shared_ptr<Acteur> lireActeur(istream& fichier, const Bibliotheque& bibliotheque
 unique_ptr<Film> lireFilm(istream& fichier, Bibliotheque& bibliotheque)
 {
     unique_ptr<Film> film = make_unique<Film>();
-    film->titre_ = lireString(fichier);
+    film->Titre = lireString(fichier);
     film->realisateur_ = lireString(fichier);
-    film->anneeSortie_ = int(lireUintTailleVariable(fichier));
+    film->Annee = int(lireUintTailleVariable(fichier));
     film->recette_ = int(lireUintTailleVariable(fichier));
     auto nActeurs = int(lireUintTailleVariable(fichier));
     film->acteurs_ = ListeActeurs(nActeurs);  // On n'a pas fait de méthode pour changer la taille d'allocation, seulement un constructeur qui prend la capacité.  Pour que cette affectation fonctionne, il faut s'assurer qu'on a un operator= de move pour ListeActeurs.
-    cout << "Création Film " << film->titre_ << endl;
+    cout << "Création Film " << film->Titre << endl;
 
     for ([[maybe_unused]] auto i : range(nActeurs)) {  // On peut aussi mettre nElements avant et faire un span, comme on le faisait au TD précédent.
         film->acteurs_.ajouter(lireActeur(fichier, bibliotheque));
@@ -143,12 +143,12 @@ unique_ptr<Livre> lireLivre(const string& fichier) {
         vectorStrings.push_back(tmp);
     }
 
-    livre->titre_ = vectorStrings[0];
-    livre->annee_ = stoi(vectorStrings[1]);
+    livre->Titre = vectorStrings[0];
+    livre->Annee = stoi(vectorStrings[1]);
     livre->auteur_ = vectorStrings[2];
     livre->millionsCopiesVendues_ = stoi(vectorStrings[3]);
     livre->nombresPages_ = stoi(vectorStrings[4]);
-    cout << "Création Livre " << livre->titre_ << endl;
+    cout << "Création Livre " << livre->Titre << endl;
 
     return livre;
 
@@ -171,9 +171,8 @@ ostream& operator<< (ostream& os, const Affichable& affichable)
 void Item::afficher(ostream& os) const
 {   
     
-    os << Titre;
-    //os << ", par " << realisateur;
-    os << "Titre: " << Titre << "  Année:" << Annee << endl;
+    os << "Titre: " << Titre << "  Année: " << Annee << endl;
+    
 }
 void Film::afficher(ostream& os) const
 {
@@ -194,24 +193,15 @@ void Livre::afficher(ostream& os) const
 
 void FilmLivre::afficher(ostream& os) const
 {
-    Item::afficher(os);
-    os << "Combo:" << endl;
-    // L'affichage comme l'exemple sur Discord est accepté, ici on montre comment on pourrait séparer en deux méthodes pour ne pas avoir le même titre d'Item affiché plusieurs fois.
-    os << "  Réalisateur: " << realisateur_ << endl;
-    os << "  Recette: " << recette_ << "M$" << endl;
-    os << "Acteurs:" << endl;
-    for (auto&& acteur : acteurs_.enSpan())
-        os << *acteur;
-    os << "Livre:" << endl;
-    os << "  Auteur: " << auteur_ << endl;
-    os << "  Vendus: " << millionsCopiesVendues_ << "M  Pages: " << nombresPages_ << endl;
+    Film::afficher(os);
+    os << ", de " << auteur_;
 }
 
 
-void Item::lireTitreAnnee(istream& is)
-{
-    is >> Titre >> Annee;
-}
+//void Item::lireTitreAnnee(istream& is)
+//{
+//    is >> Titre >> Annee;
+//}
 
 
 
@@ -225,6 +215,9 @@ Bibliotheque::Bibliotheque(string nomFichierFilm, string nomFichierLivre) {
     }
 
     ifstream fichierLivre(nomFichierLivre);
+    if (fichierLivre.fail()) {
+        cout << "Erreur lors de l'ouverture du fichier " << nomFichierLivre << endl;
+    }
     string ligne;
     while (getline(fichierLivre, ligne)) {
         ajouterItem(lireLivre(ligne));
